@@ -1,6 +1,7 @@
 import React from "react";
 import '../style.scss';
 import ProfileImg from '../img/addAvatar.png'
+import FileInput from "../components/FileInput";
 
 
 export default function Register() {
@@ -13,11 +14,7 @@ export default function Register() {
                     <input type="text" placeholder="Användarnamn" />
                     <input type="email" placeholder="E-post" />
                     <input type="password" placeholder="Lösenord"/>
-                    <input style={{display:"none"}} type="file" id="file" />
-                    <label htmlFor="file">
-                        <img src={ProfileImg} alt="" />
-                        <span>Lägg till profilbild</span>
-                    </label>
+                    <FileInput inputType={ProfileImg}/>
                     <button>Skapa konto</button>
                 </form>
                 <p>Har du redan ett konto? Logga in</p>

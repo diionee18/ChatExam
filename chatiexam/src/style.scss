@@ -1,25 +1,28 @@
-$text-primary-color: #5d5b8d;
-$button-primary-color: #7b96ec;
-$background-color: #a7bcff;
+$primary-color: #5d5b8d;
 $secondary-color: #6c757d;
-$white-color: white;
-$light-color: #8da4f1;
+$background-color: #a7bcff;
+
+$button-primary-color: #7b96ec;
+$white-color: #ddddf7;
 $placeholder-color: rgb(81, 80, 80);
-$dark-color: #343a40;
 
+$light-dark-color: #3e3c61;
+$light-grey: lightgrey;
+$light-color: #8da4f1;
+$dark-color: #2f2d52;
+$dark-grey: rgb(147, 146, 146);
 
-
-*{
+* {
     padding: 0;
     margin: 0;
 }
-.form-container{
+.form-container {
     background-color: $background-color;
     height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    .form-wrapper{
+    .form-wrapper {
         background-color: $white-color;
         padding: 20px 60px;
         border-radius: 10px;
@@ -27,33 +30,33 @@ $dark-color: #343a40;
         flex-direction: column;
         gap: 10px;
         align-items: center;
-        
-        .logo{
-            color: $text-primary-color;
+
+        .logo {
+            color: $primary-color;
             font-weight: bold;
             font-size: 24px;
         }
-        .title{
-            color: $text-primary-color;
+        .title {
+            color: $primary-color;
             font-size: 16px;
         }
 
-        form{
+        form {
             display: flex;
             flex-direction: column;
             gap: 15px;
 
-            input{
+            input {
                 padding: 15px;
                 border: none;
                 border-bottom: 1px solid $background-color;
                 width: 250px;
-                &::placeholder{
-                    color:$placeholder-color ;
+                &::placeholder {
+                    color: $placeholder-color;
                 }
             }
-            button{
-                background-color:$button-primary-color ;
+            button {
+                background-color: $button-primary-color;
                 color: $white-color;
                 padding: 10px;
                 font-weight: bold;
@@ -61,23 +64,189 @@ $dark-color: #343a40;
                 cursor: pointer;
             }
 
-            label{
+            label {
                 display: flex;
                 align-items: center;
                 gap: 10px;
                 color: $light-color;
                 font-size: 14px;
                 cursor: pointer;
-                img{
+                img {
                     width: 32px;
                 }
             }
-
         }
-        p{
-            color: $text-primary-color;
+        p {
+            color: $primary-color;
             font-size: 14px;
-            margin-top: 10px ;
+            margin-top: 10px;
+        }
+    }
+}
+
+.home {
+    background-color: $background-color;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .container {
+        border: 1px solid white;
+        border-radius: 10px;
+        width: 65%;
+        height: 80%;
+        display: flex;
+        overflow: hidden;
+        .sidebar {
+            flex: 1;
+            background-color: $light-dark-color;
+
+            .navbar {
+                display: flex;
+                align-items: center;
+                background-color: $dark-color;
+                height: 50px;
+                padding: 10px;
+                justify-content: space-between;
+                color: $white-color;
+
+                .logo {
+                    font-weight: bold;
+                }
+
+                .user {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                }
+
+                img {
+                    background-color: $white-color;
+                    height: 35px;
+                    width: 35px;
+                    border-radius: 50%;
+                    object-fit: cover;
+                }
+
+                button {
+                    background-color: $primary-color;
+                    color: $white-color;
+                    font-size: 12px;
+                    border: none;
+                    cursor: pointer;
+                    padding: 5px;
+                }
+            }
+            .search {
+                border-bottom: 1px solid $secondary-color;
+
+                .searchForm {
+                    padding: 10px;
+                    input {
+                        background-color: transparent;
+                        border: none;
+                        color: $white-color;
+                        outline: none;
+                        &::placeholder{
+                            color: $light-grey;
+
+                        }
+                    }
+                }
+            }
+
+            .userChat {
+                padding: 10px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                color: $white-color;
+                cursor: pointer;
+                &:hover{
+                    background-color: $dark-color;
+                }
+                img{
+                    width: 50px;
+                    height: 50px;
+                    border-radius: 50%;
+                    object-fit: cover;
+                }
+                .userChatInfo{
+                    span{
+                        font-size: 18px;
+                        font-weight: bold;
+                    }
+                    p{
+                        font-size: 14px;
+                        color: $light-grey;
+                    }
+                }
+            }
+        }
+        .chat {
+            flex: 2;
+
+            .chatInfo{
+                height: 50px;
+                background-color: $primary-color;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 10px;
+                color: $light-grey;
+            }
+
+            .chatIcons{
+                
+                img{
+                    height: 24px;
+                    cursor: pointer;
+                }
+                
+            }
+
+            .messages{
+                background-color: $white-color ;
+                padding: 10px;
+                height: calc(100% - 160px);
+            }
+
+            .input{
+                height: 50px;
+                background-color: white;
+                padding: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                input{
+                    width: 100%;
+                    border: none;
+                    outline: none;
+                    color: $dark-color;
+                    font-size: 16px;
+                    &::placeholder{
+                        color: $dark-grey;
+                    }
+                }
+
+                .send{
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    img{
+                        height: 24px;
+                        cursor: pointer;
+                    }
+
+                    button{
+                        border: none;
+                        padding: 10px 15px;
+                        color: white;
+                        background-color: $light-color;
+                    }
+                }
+
+            }
         }
     }
 }
