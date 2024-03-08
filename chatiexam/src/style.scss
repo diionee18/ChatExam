@@ -1,3 +1,21 @@
+@mixin mobile{
+    @media screen and (max-width: 480px ) {
+        @content;
+    }
+}
+@mixin tablet{
+    @media screen and (max-width: 1130px ) {
+        @content;
+    }
+}
+@mixin laptop{
+    @media screen and (max-width: 1200px ) {
+        @content;
+    }
+}
+
+
+
 $primary-color: #5d5b8d;
 $secondary-color: #6c757d;
 $background-color: #a7bcff;
@@ -45,6 +63,7 @@ $dark-grey: rgb(147, 146, 146);
             display: flex;
             flex-direction: column;
             gap: 15px;
+            position: relative;
 
             input {
                 padding: 15px;
@@ -75,6 +94,31 @@ $dark-grey: rgb(147, 146, 146);
                     width: 32px;
                 }
             }
+
+            .errMessage{
+                position: absolute;
+                text-align: center;
+                top: 30%;
+                background-color: rgb(118, 15, 15);
+                padding: 10px 10px;
+                color: white;
+                
+            }
+            .closeErr{
+                position: absolute;
+                top: 32%;
+                right: 5px;
+                background-color: white;
+                width: 20px;
+                height: 20px;
+                font-weight: bold;
+                border-radius: 50%;
+                text-align: center;
+                cursor: pointer;
+            }
+            .closeErr::after{
+                content: "\00d7";
+            }
         }
         p {
             color: $primary-color;
@@ -83,6 +127,8 @@ $dark-grey: rgb(147, 146, 146);
         }
     }
 }
+
+
 
 .home {
     background-color: $background-color;
@@ -97,9 +143,16 @@ $dark-grey: rgb(147, 146, 146);
         height: 80%;
         display: flex;
         overflow: hidden;
+        @include tablet{
+            width: 95%;
+        }
+        @include tablet{
+            width: 95%;
+        }
         .sidebar {
             flex: 1;
             background-color: $light-dark-color;
+            position: relative;
 
             .navbar {
                 display: flex;
@@ -112,6 +165,9 @@ $dark-grey: rgb(147, 146, 146);
 
                 .logo {
                     font-weight: bold;
+                    @include tablet{
+                        display: none;
+                    }
                 }
 
                 .user {
@@ -135,6 +191,10 @@ $dark-grey: rgb(147, 146, 146);
                     border: none;
                     cursor: pointer;
                     padding: 5px;
+                    @include tablet{
+                        position: absolute;
+                        bottom: 10px;
+                    }
                 }
             }
             .search {
@@ -209,6 +269,59 @@ $dark-grey: rgb(147, 146, 146);
                 background-color: $white-color ;
                 padding: 10px;
                 height: calc(100% - 160px);
+                overflow-y: scroll;
+
+                .message{
+                    display: flex;
+                    gap: 20px;
+                    margin-bottom: 20px;
+
+                    .messageInfo{
+                        display: flex;
+                        flex-direction: column;
+                        color: $dark-grey;
+                        img{
+                            width: 40px;
+                            height: 40px;
+                            border-radius: 50%;
+                            object-fit: cover;
+                        }
+                    }
+                    .messageContent{
+                        max-width: 80%;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 10px;
+                        p{
+                            background-color: white;
+                            padding: 10px 20px;
+                            border-radius: 0px 10px 10px 10px;
+                            max-width: max-content;
+                        }
+
+                        img{
+                            width: 50%;
+                            @include tablet{
+                                width: 35%;
+                            }
+                        }
+                    }
+
+                    &.owner{
+                        flex-direction: row-reverse;
+
+                        .messageContent{
+                            align-items: flex-end;
+                            
+                            p{
+                                background-color: $light-color;
+                                color: white;
+                                border-radius: 10px 0px 10px 10px;
+                            }
+                        }
+                        
+                    }
+                }
             }
 
             .input{
