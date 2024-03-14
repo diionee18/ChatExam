@@ -45,12 +45,7 @@ export default function Register() {
             }
 
             // Validera filuppladdning
-            if (!file) {
-                setErr(true);
-                setErrMessage("Vänligen välj en profilbild");
-                return;
-            }
-
+            
             const res = await createUserWithEmailAndPassword(auth, email, password);
 
             //Upload Image
