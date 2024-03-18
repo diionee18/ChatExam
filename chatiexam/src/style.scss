@@ -385,6 +385,11 @@ $dark-grey: rgb(147, 146, 146);
                         padding: 10px 15px;
                         color: white;
                         background-color: $light-color;
+                        cursor: pointer;
+                    }
+                    button:hover{
+                        background-color: $light-dark-color;
+
                     }
                 }
 

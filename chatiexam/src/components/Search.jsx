@@ -43,16 +43,16 @@ const Search = () => {
                     await setDoc(doc(db,"chats",combinedId), {messages: []})
                     
                     await updateDoc(doc(db, "userChats", currentUser.uid), {
-                        [combinedId+".userInfo"]:{
+                        [combinedId + ".userInfo"]:{
                             uid:user.uid,
                             displayName: user.displayName,
                             photoURL: user.photoURL
                         },
-                        [combinedId+".date"]:serverTimestamp()
+                        [combinedId + ".date"]:serverTimestamp()
                     })
 
                     await updateDoc(doc(db, "userChats", user.uid), {
-                        [combinedId+".userInfo"]:{
+                        [combinedId+ ".userInfo"]:{
                             uid:combinedId.uid,
                             displayName: combinedId.displayName,
                             photoURL: combinedId.photoURL
