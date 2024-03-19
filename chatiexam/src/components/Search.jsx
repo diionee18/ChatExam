@@ -13,6 +13,11 @@ const Search = () => {
     const { dispatch } = useContext(ChatContext);
 
     const handleSearch = async () => {
+
+        if (username === currentUser.displayName) {
+            return;
+        }
+
         const q = query(collection(db, "users"), where("displayName", "==", username));
 
         try {
@@ -31,44 +36,38 @@ const Search = () => {
 
     const handleSelect = async () => {
         const combinedId =
-            currentUser.uid > user.uid 
-            ? currentUser.uid + user.uid 
+          currentUser.uid > user.uid
+            ? currentUser.uid + user.uid
             : user.uid + currentUser.uid;
-
-            try{
-
-                const res = await getDoc(doc(db, "chats", combinedId));
-                
-                if(!res.exists()){
-                    await setDoc(doc(db,"chats",combinedId), {messages: []})
-                    
-                    await updateDoc(doc(db, "userChats", currentUser.uid), {
-                        [combinedId + ".userInfo"]:{
-                            uid:user.uid,
-                            displayName: user.displayName,
-                            photoURL: user.photoURL
-                        },
-                        [combinedId + ".date"]:serverTimestamp()
-                    })
-
-                    await updateDoc(doc(db, "userChats", user.uid), {
-                        [combinedId+ ".userInfo"]:{
-                            uid:combinedId.uid,
-                            displayName: combinedId.displayName,
-                            photoURL: combinedId.photoURL
-                        },
-                        [combinedId+".date"]:serverTimestamp()
-                    })
-                }
-            }catch(err){
-                console.log(err.message);
-            }
-            dispatch({ type: "CHANGE_USER", payload: user });
-
-
-            setUser(null)
-            setUsername("")
-    };
+        try {
+          const res = await getDoc(doc(db, "chats", combinedId));
+    
+          if (!res.exists()) {
+            await setDoc(doc(db, "chats", combinedId), { messages: [] });
+    
+            await updateDoc(doc(db, "userChats", currentUser.uid), {
+              [combinedId + ".userInfo"]: {
+                uid: user.uid,
+                displayName: user.displayName,
+                photoURL: user.photoURL,
+              },
+              [combinedId + ".date"]: serverTimestamp(),
+            });
+    
+            await updateDoc(doc(db, "userChats", user.uid), {
+              [combinedId + ".userInfo"]: {
+                uid: currentUser.uid,
+                displayName: currentUser.displayName,
+                photoURL: currentUser.photoURL,
+              },
+              [combinedId + ".date"]: serverTimestamp(),
+            });
+          }
+        } catch (err) {}
+    
+        setUser(null);
+        setUsername("")
+      };
 
     return (
         <div className="search">
