@@ -7,6 +7,8 @@ const Message = ({ message }) => {
     const { data } = useContext(ChatContext);
     const isUserSelected = data && data.user; 
 
+   
+
     const ref = useRef();
     useEffect(() => {
         ref.current?.scrollIntoView({ behavior: "smooth" });
@@ -24,6 +26,7 @@ const Message = ({ message }) => {
                         }
                         alt=""
                     />
+
                 </div>
             );
         } else {
