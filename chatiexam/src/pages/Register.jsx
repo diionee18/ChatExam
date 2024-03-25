@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import "../style.scss";
 import ProfileImg from "../img/addAvatar.png";
 import FileInput from "../components/FileInput";
@@ -7,16 +7,17 @@ import { auth, db, storage } from "../firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { doc, setDoc } from "firebase/firestore";
 import { useNavigate, Link } from "react-router-dom";
+import { AuthContext } from "../components/context/AuthContext";
 
 export default function Register() {
     const [errMessage, setErrMessage] = useState("");
     const [err, setErr] = useState(false);
     const [loading, setLoading] = useState(false);
     const [loadingStatus, setLoadingStatus] = useState(0);
-
+    const { disable } = useContext(AuthContext);
 
     const navigate = useNavigate();
-    
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -26,9 +27,6 @@ export default function Register() {
         const file = e.target[3].files[0];
 
         try {
-
-           
-
             // Validera e-post
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) {
@@ -45,7 +43,7 @@ export default function Register() {
             }
 
             // Validera filuppladdning
-            
+
             const res = await createUserWithEmailAndPassword(auth, email, password);
 
             //Upload Image
@@ -56,11 +54,11 @@ export default function Register() {
                 (snapshot) => {
                     const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                     setLoadingStatus(progress.toFixed(1));
-                    setLoading(true)
+                    setLoading(true);
                 },
                 (error) => {
                     setErr(true);
-                    setLoading(false)
+                    setLoading(false);
                     setErrMessage(error.message);
                 },
                 () => {
@@ -75,7 +73,6 @@ export default function Register() {
                             email,
                             photoURL: downloadURL,
                         });
-                        
 
                         await setDoc(doc(db, "userChats", res.user.uid), {});
                         navigate("/");
@@ -91,15 +88,15 @@ export default function Register() {
     const handleBlur = (e) => {
         const value = e.target.value.trim();
         if (!value) {
-            e.target.classList.add('focus-error');
-        } else if (value){
-            e.target.classList.remove('error');
+            e.target.classList.add("focus-error");
+        } else if (value) {
+            e.target.classList.remove("error");
         }
     };
 
     const handleFocus = (e) => {
         e.target.classList.remove("focus-error");
-        setErr(false)
+        setErr(false);
     };
 
     const closeError = () => {
@@ -112,7 +109,7 @@ export default function Register() {
                 <span className="logo">Chatii Exam</span>
                 <span className="title">Registrering</span>
                 <form onSubmit={handleSubmit}>
-                     <input
+                    <input
                         type="text"
                         placeholder="Användarnamn"
                         onBlur={handleBlur}
@@ -131,7 +128,7 @@ export default function Register() {
                         onFocus={handleFocus}
                     />
                     <FileInput inputType={ProfileImg} />
-                    <button>Skapa konto</button>
+                    {disable ? <button disabled>Skapa konto</button> : <button>Skapa konto</button>}
                     {err && (
                         <>
                             <span className="errMessage">
@@ -143,7 +140,7 @@ export default function Register() {
                     {loading && (
                         <>
                             <span className="loading">
-                               Skapar konto.... {loadingStatus} %<br /> {}
+                                Skapar konto.... {loadingStatus} %<br /> {}
                             </span>
                         </>
                     )}

@@ -1,5 +1,4 @@
 import React, { useContext, useState } from "react";
-import FileInput from "./FileInput";
 import imgIcon from "../img/img.png";
 import attach from "../img/attach.png";
 import { AuthContext } from "./context/AuthContext";
@@ -9,71 +8,95 @@ import { db, storage } from "../firebase";
 import { v4 as uuid } from "uuid";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 
-
-
 const Input = () => {
     const [text, setText] = useState("");
     const [img, setImg] = useState(null);
     const [err, setErr] = useState(false);
+    const [file, setFile] = useState(null);
     const [errMessage, setErrMessage] = useState("");
-
+    const [filePreview, setFilePreview] = useState(null);
     const { currentUser } = useContext(AuthContext);
     const { data } = useContext(ChatContext);
 
     const handleSend = async () => {
+        if (text.trim() === "" && !img) {
+            return;
+        }
+
+        let messageData = {
+            id: uuid(),
+            senderId: currentUser.uid,
+            date: Timestamp.now(),
+        };
+
+        if (text.trim() !== "") {
+            messageData.text = text;
+        }
+
         if (img) {
             const storageRef = ref(storage, uuid());
             const uploadTask = uploadBytesResumable(storageRef, img);
 
-            uploadTask.on(
-                (error) => {
-                    setErr(true);
-                    setErrMessage(error.message);                },
-                () => {
-                    getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
-                        await updateDoc(doc(db, "chats", data.chatId), {
-                            messages: arrayUnion({
-                                id: uuid(),
-                                text,
-                                senderId: currentUser.uid,
-                                date: Timestamp.now(),
-                                img: downloadURL,
-                            }),
-                        });
-                    });
-                }
-            );
-        } else {
-            await updateDoc(doc(db, "chats", data.chatId), {
-                messages: arrayUnion({
-                    id: uuid(),
-                    text,
-                    senderId: currentUser.uid,
-                    date: Timestamp.now(),
-                }),
-            });
+            try {
+                const snapshot = await uploadTask;
+                const downloadURL = await getDownloadURL(snapshot.ref);
+                messageData.img = downloadURL;
+            } catch (error) {
+                setErr(true);
+                setErrMessage(error.message);
+                return;
+            }
         }
 
-        await updateDoc(doc(db, "userChats", currentUser.uid), {
-            [data.chatId + ".lastMessage"]: {
-                text,
-            },
-            [data.chatId + ".date"]: serverTimestamp(),
-        });
+        try {
+            await updateDoc(doc(db, "chats", data.chatId), {
+                messages: arrayUnion(messageData),
+            });
 
-        await updateDoc(doc(db, "userChats", data.user.uid), {
-            [data.chatId + ".lastMessage"]: {
-                text,
-            },
-            [data.chatId + ".date"]: serverTimestamp(),
-        });
+            const updateData = {
+                [data.chatId + ".lastMessage"]: {
+                    text: messageData.text || "Bild",
+                },
+                [data.chatId + ".date"]: serverTimestamp(),
+            };
+
+            await Promise.all([
+                updateDoc(doc(db, "userChats", currentUser.uid), updateData),
+                updateDoc(doc(db, "userChats", data.user.uid), updateData),
+            ]);
+        } catch (error) {
+            console.error("Error sending message:", error);
+        }
 
         setText("");
         setImg(null);
+        setFilePreview(null);
     };
 
+    const handleFileChange = (event) => {
+        const selectedFile = event.target.files[0];
+        if (selectedFile) {
+            if (selectedFile.type.startsWith("image/")) {
+                setFile(selectedFile);
+                setFilePreview(URL.createObjectURL(selectedFile));
+                setErr(false); // Återställ felmeddelandet om en giltig fil har valts
+            } else {
+                setFile(null); // Återställ fil och förhandsvisning om en ogiltig fil har valts
+                setFilePreview(null);
+                setErr(true);
+                setErrMessage("Felaktig filtyp. Vänligen välj en bildfil.");
+            }
+        } else {
+            setErr(false);
+            setErrMessage("");
+        }
+    };
 
-   
+    const removeFile = () =>{
+        setImg(null);
+        setFilePreview(null);
+    }
+
     return (
         <div className="input">
             <input
@@ -82,19 +105,31 @@ const Input = () => {
                 onChange={(e) => setText(e.target.value)}
                 value={text}
             />
+            {filePreview && (
+                <div className="prevDiv">
+                    <span onClick={removeFile} className="closePrev">&#88;</span>
+
+                    <img
+                        src={filePreview} 
+                        alt="Bildförhandsvisning"
+                        
+                    />
+                </div>
+            )}
+            {err && <span>{errMessage}</span>}
+
             <div className="send">
-                <img src={attach} alt="" />
+                <label htmlFor="file">
+                    <img src={imgIcon} alt="" />
+                </label>
 
                 <input
                     style={{ display: "none" }}
                     type="file"
                     id="file"
-                    onChange={(e) => setImg(e.target.files[0])}
+                    accept="image/png, image/gif, image/jpeg"
+                    onChange={handleFileChange}
                 />
-                <label htmlFor="file">
-                    <img src={imgIcon} alt="" />
-                </label>
-                {err && <span>{errMessage}</span>}
                 <button onClick={handleSend}>Skicka</button>
             </div>
         </div>
