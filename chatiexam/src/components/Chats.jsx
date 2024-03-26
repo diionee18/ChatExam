@@ -6,14 +6,15 @@ import { db } from "../firebase";
 
 const Chats = () => {
     const [chats, setChats] = useState([]);
-  
-    const { currentUser } = useContext(AuthContext);
+
+    
+    const { currentUser, setShowConv, showConv } = useContext(AuthContext);
     const { dispatch } = useContext(ChatContext);
-  
+    
     useEffect(() => {
-      const getChats = () => {
-        const unsub = onSnapshot(doc(db, "userChats", currentUser.uid), (doc) => {
-          setChats(doc.data());
+        const getChats = () => {
+            const unsub = onSnapshot(doc(db, "userChats", currentUser.uid), (doc) => {
+                setChats(doc.data());
         });
   
         return () => {
@@ -26,6 +27,7 @@ const Chats = () => {
   
     const handleSelect = (u) => {
       dispatch({ type: "CHANGE_USER", payload: u });
+      setShowConv(true)
     };
   
     return (

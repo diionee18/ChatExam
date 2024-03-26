@@ -10,7 +10,6 @@ const Navbar = () => {
     const signOutUser = () => {
         signOut(auth)
         setShowConv(false)
-
     }
 
   return (

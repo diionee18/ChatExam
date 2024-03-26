@@ -63,10 +63,10 @@ const Search = () => {
               [combinedId + ".date"]: serverTimestamp(),
             });
     
-            // Here, you can set the conversation context or route to conversation view
+           
             setShowConv(true);
           } else {
-            // Conversation already exists, set the conversation context or route to conversation view
+            
             setShowConv(true);
           }
         } catch (err) {}
