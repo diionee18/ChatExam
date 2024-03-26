@@ -2,18 +2,18 @@ import React, { useContext, useEffect, useRef } from 'react'
 import { AuthContext } from './context/AuthContext';
 import { ChatContext } from './context/ChatContext';
 
+
 const Message = ({ message }) => {
     const { currentUser } = useContext(AuthContext);
     const { data } = useContext(ChatContext);
     const isUserSelected = data && data.user; 
 
-   
+    const messageRef = useRef(null);
 
-    const ref = useRef();
     useEffect(() => {
-        ref.current?.scrollIntoView({ behavior: "smooth" });
+        messageRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [message]);
-  
+
     const renderMessageInfo = () => {
         if (isUserSelected) {
             return (
@@ -26,7 +26,6 @@ const Message = ({ message }) => {
                         }
                         alt=""
                     />
-
                 </div>
             );
         } else {
@@ -40,7 +39,7 @@ const Message = ({ message }) => {
 
     return (
         <div
-            ref={ref}
+            ref={messageRef}
             className={`message ${message.senderId === currentUser.uid && "owner"}`}
         >
             {renderMessageInfo()}
@@ -53,4 +52,3 @@ const Message = ({ message }) => {
 }
 
 export default Message;
-

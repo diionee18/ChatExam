@@ -22,21 +22,21 @@ const Input = () => {
         if (text.trim() === "" && !img) {
             return;
         }
-
+    
         let messageData = {
             id: uuid(),
             senderId: currentUser.uid,
             date: Timestamp.now(),
         };
-
+    
         if (text.trim() !== "") {
             messageData.text = text;
         }
-
+    
         if (img) {
             const storageRef = ref(storage, uuid());
             const uploadTask = uploadBytesResumable(storageRef, img);
-
+    
             try {
                 const snapshot = await uploadTask;
                 const downloadURL = await getDownloadURL(snapshot.ref);
@@ -47,19 +47,19 @@ const Input = () => {
                 return;
             }
         }
-
+    
         try {
             await updateDoc(doc(db, "chats", data.chatId), {
                 messages: arrayUnion(messageData),
             });
-
+    
             const updateData = {
                 [data.chatId + ".lastMessage"]: {
                     text: messageData.text || "Bild",
                 },
                 [data.chatId + ".date"]: serverTimestamp(),
             };
-
+    
             await Promise.all([
                 updateDoc(doc(db, "userChats", currentUser.uid), updateData),
                 updateDoc(doc(db, "userChats", data.user.uid), updateData),
@@ -67,17 +67,18 @@ const Input = () => {
         } catch (error) {
             console.error("Error sending message:", error);
         }
-
+    
         setText("");
         setImg(null);
         setFilePreview(null);
+        console.log("klick");
     };
 
     const handleFileChange = (event) => {
         const selectedFile = event.target.files[0];
         if (selectedFile) {
             if (selectedFile.type.startsWith("image/")) {
-                setFile(selectedFile);
+                setImg(selectedFile);
                 setFilePreview(URL.createObjectURL(selectedFile));
                 setErr(false); // Återställ felmeddelandet om en giltig fil har valts
             } else {
@@ -87,6 +88,8 @@ const Input = () => {
                 setErrMessage("Felaktig filtyp. Vänligen välj en bildfil.");
             }
         } else {
+            setImg(null);
+            setFilePreview(null);
             setErr(false);
             setErrMessage("");
         }
@@ -127,7 +130,7 @@ const Input = () => {
                     style={{ display: "none" }}
                     type="file"
                     id="file"
-                    accept="image/png, image/gif, image/jpeg"
+                    accept="image/*"
                     onChange={handleFileChange}
                 />
                 <button onClick={handleSend}>Skicka</button>
