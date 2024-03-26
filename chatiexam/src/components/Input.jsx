@@ -13,6 +13,7 @@ const Input = () => {
     const [img, setImg] = useState(null);
     const [err, setErr] = useState(false);
     const [file, setFile] = useState(null);
+    const [isSending, setIsSending] = useState(false);
     const [errMessage, setErrMessage] = useState("");
     const [filePreview, setFilePreview] = useState(null);
     const { currentUser } = useContext(AuthContext);
@@ -22,7 +23,8 @@ const Input = () => {
         if (text.trim() === "" && !img) {
             return;
         }
-    
+        setIsSending(true);
+
         let messageData = {
             id: uuid(),
             senderId: currentUser.uid,
@@ -72,6 +74,7 @@ const Input = () => {
         setImg(null);
         setFilePreview(null);
         console.log("klick");
+        setIsSending(false);
     };
 
     const handleFileChange = (event) => {
@@ -133,7 +136,9 @@ const Input = () => {
                     accept="image/*"
                     onChange={handleFileChange}
                 />
-                <button onClick={handleSend}>Skicka</button>
+                <button onClick={handleSend} disabled={isSending}> 
+                    {isSending ? "Skickar..." : "Skicka"} 
+                </button>
             </div>
         </div>
     );
