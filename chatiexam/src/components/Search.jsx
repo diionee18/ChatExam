@@ -9,7 +9,7 @@ const Search = () => {
     const [user, setUser] = useState(null);
     const [error, setError] = useState(false);
 
-    const { currentUser } = useContext(AuthContext);
+    const { currentUser, setShowConv } = useContext(AuthContext);
     const { dispatch } = useContext(ChatContext);
 
     const handleSearch = async () => {
@@ -62,19 +62,25 @@ const Search = () => {
               },
               [combinedId + ".date"]: serverTimestamp(),
             });
+    
+            // Here, you can set the conversation context or route to conversation view
+            setShowConv(true);
+          } else {
+            // Conversation already exists, set the conversation context or route to conversation view
+            setShowConv(true);
           }
         } catch (err) {}
     
         setUser(null);
-        setUsername("")
-      };
-
+        setUsername("");
+    };
+    
     return (
         <div className="search">
             <div className="searchForm">
                 <input
                     type="text"
-                    placeholder="Sök"
+                    placeholder="Sök efter en användare för att börja chatta."
                     onKeyDown={handleKey}
                     onChange={(e) => setUsername(e.target.value)}
                     value={username}

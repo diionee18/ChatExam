@@ -228,11 +228,12 @@ $dark-grey: rgb(147, 146, 146);
             }
             .search {
                 border-bottom: 1px solid $secondary-color;
-
+                
                 .searchForm {
                     padding: 10px;
                     input {
                         background-color: transparent;
+                        width: 400px;
                         border: none;
                         color: $white-color;
                         outline: none;

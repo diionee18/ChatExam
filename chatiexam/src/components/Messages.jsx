@@ -7,6 +7,7 @@ import { db } from "../firebase";
 const Messages = () => {
     const [messages, setMessages] = useState([]);
     const { data } = useContext(ChatContext);
+
     useEffect(() => {
         const unSub = onSnapshot(doc(db, "chats", data.chatId), (doc) => {
             doc.exists() && setMessages(doc.data().messages);
@@ -16,6 +17,15 @@ const Messages = () => {
             unSub();
         };
     }, [data.chatId]);
+
+    if (!data || !data.user) {
+        return (
+            <div className="messages">
+                <p>Välj en användare för att börja meddela</p>
+            </div>
+        );
+    }
+
     return (
         <div className="messages">
             {messages.map((m) => (

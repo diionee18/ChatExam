@@ -4,7 +4,14 @@ import { auth } from '../firebase'
 import {AuthContext} from './context/AuthContext'
 
 const Navbar = () => {
-    const {currentUser} = useContext(AuthContext)
+    const {currentUser, setShowConv} = useContext(AuthContext)
+    
+
+    const signOutUser = () => {
+        signOut(auth)
+        setShowConv(false)
+
+    }
 
   return (
     <div className='navbar'>
@@ -12,7 +19,7 @@ const Navbar = () => {
       <div className="user">
         <img src={currentUser.photoURL} alt="" />
         <span>{currentUser.displayName}</span>
-        <button onClick={()=>signOut(auth)}>Logga ut</button>
+        <button onClick={signOutUser}>Logga ut</button>
       </div>
     </div>
   )
